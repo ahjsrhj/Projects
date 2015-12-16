@@ -1,6 +1,6 @@
 package tk.imrhj.onechat.Activity;
 
-import android.os.Build;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +9,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +23,7 @@ import tk.imrhj.onechat.Fragment.PersonalProfileFragment;
 import tk.imrhj.onechat.R;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -31,10 +35,20 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         viewPager = (ViewPager)findViewById(R.id.pager);
         tabLayout = (TabLayout)findViewById(R.id.tablayout);
-        setTitle("OneChat");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimaryText));
-        setSupportActionBar(toolbar);
+        initToolbar();
         initTabLayout();
+    }
+
+    /**
+     * 初始化Toolbar
+     */
+    private void initToolbar() {
+        setTitle("OneChat");
+        toolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
+
+
+//        toolbar.setOnMenuItemClickListener(this);
     }
 
     private void initTabLayout() {
@@ -52,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -62,11 +77,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabsFromPagerAdapter(adapter);
     }
+
     public class TabFragmentAdapter extends FragmentStatePagerAdapter {
 
         private List<Fragment> mFragments;
@@ -92,5 +109,18 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mTitles.get(position);
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "onOptionsItemSelected: ");
+        return true;
     }
 }
