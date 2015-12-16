@@ -30,7 +30,7 @@ public class LoginActivity extends AVBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        startActivity(new Intent(this, MainActivity.class));
+//        startActivity(new Intent(this, MainActivity.class));
     }
 
     @OnClick(R.id.activity_login_btn_login)
