@@ -16,7 +16,6 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import tk.imrhj.onechat.Fragment.ContactFragment;
 import tk.imrhj.onechat.Fragment.ConversationFragment;
-import tk.imrhj.onechat.Fragment.ConversationFragmentUpdateEvent;
 import tk.imrhj.onechat.Fragment.PersonalProfileFragment;
 import tk.imrhj.onechat.R;
 
