@@ -10,6 +10,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+import tk.imrhj.onechat.Provider.CustomUserProvider;
+
 /**
  * Created by rhj on 15/12/14.
  */
@@ -23,7 +25,7 @@ public class App extends Application {
         ChatManager.getInstance().init(this);
         initImageLoader(this);
 
-//        ThirdPartUserUtils.setThirdPartUserProvider(new CustomUserProvider());
+        ThirdPartUserUtils.setThirdPartUserProvider(new CustomUserProvider());
     }
 
 
