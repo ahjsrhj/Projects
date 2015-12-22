@@ -31,7 +31,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import tk.imrhj.onechat.Activity.ConversationFragmentUpdateEvent;
-import tk.imrhj.onechat.Adapter.UserListAdapter;
+import tk.imrhj.onechat.Adapter.roomListAdapter;
 import tk.imrhj.onechat.R;
 import tk.imrhj.onechat.Util.Utils;
 
@@ -42,8 +42,8 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
     private static final String TAG = "ConversationFragment";
     private ListView mChatList;
     private List<AVIMConversation> mConversationList;
-    private List<UserListAdapter.User> mRoomItem;
-    private UserListAdapter mAdapter;
+    private List<roomListAdapter.User> mRoomItem;
+    private roomListAdapter mAdapter;
     private ConversationManager mConversationManager;
 
     @Nullable
@@ -65,7 +65,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
      */
     private void initListView() {
         mRoomItem = new ArrayList<>();
-        mAdapter = new UserListAdapter(getActivity(), mRoomItem);
+        mAdapter = new roomListAdapter(getActivity(), mRoomItem);
         mChatList.setAdapter(mAdapter);
         mChatList.setOnItemClickListener(this);
     }
@@ -115,11 +115,12 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
         String selfID = ChatManager.getInstance().getSelfId();
         Date date;
         for (Room room : roomList) {
-            UserListAdapter.User user = new UserListAdapter.User();
+            roomListAdapter.User user = new roomListAdapter.User();
             user.mUserID = Utils.getConversationUserID(selfID, room.getConversation().getMembers());
             date = new Date(room.getLastModifyTime());
             user.mLastTime = date.toString();
             Log.d(TAG, "addToRoomList: " + user.mLastTime);
+            user.mConversationID = room.getConversationId();
             mRoomItem.add(user);
         }
 
@@ -197,7 +198,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getContext(), AVChatActivity.class);
-        intent.putExtra(Constants.CONVERSATION_ID, mRoomItem.get(position).mUserID);
+        intent.putExtra(Constants.CONVERSATION_ID, mRoomItem.get(position).mConversationID);
         getContext().startActivity(intent);
 
     }

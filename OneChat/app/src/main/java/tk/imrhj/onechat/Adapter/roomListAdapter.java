@@ -14,17 +14,17 @@ import tk.imrhj.onechat.R;
 /**
  * Created by rhj on 15/12/16.
  */
-public class UserListAdapter extends BaseAdapter {
+public class roomListAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<User> mUserList;
 
     //构造方法
-    public UserListAdapter(Context context) {
+    public roomListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
     }
 
     //构造方法
-    public UserListAdapter(Context context, List<User> userList) {
+    public roomListAdapter(Context context, List<User> userList) {
         mInflater = LayoutInflater.from(context);
         mUserList = userList;
     }
@@ -77,8 +77,10 @@ public class UserListAdapter extends BaseAdapter {
     }
 
     public static class User {
+
         public String mUserID;
         public String mLastMSG;
         public String mLastTime;
+        public String mConversationID;
     }
 }

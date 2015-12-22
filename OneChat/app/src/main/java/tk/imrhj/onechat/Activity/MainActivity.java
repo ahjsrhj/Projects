@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 Intent intent = new Intent(MainActivity.this, AVChatActivity.class);
-                intent.putExtra(Constants.CONVERSATION_ID, userID);
+                intent.putExtra(Constants.MEMBER_ID, userID);
                 startActivity(intent);
 
             }

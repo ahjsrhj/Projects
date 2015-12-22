@@ -2,7 +2,10 @@ package com.avoscloud.leanchatlib.activity;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.avoscloud.leanchatlib.R;
 import com.avos.avoscloud.im.v2.AVIMClient;
@@ -21,14 +24,20 @@ import com.avoscloud.leanchatlib.utils.LogUtils;
  */
 public class AVChatActivity extends AVBaseActivity {
 
+  private static final String TAG = "AVChatActivity";
   protected ChatFragment chatFragment;
   protected AVIMConversation conversation;
+
+
+  protected Toolbar mToolbar;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_chat);
     chatFragment = (ChatFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_chat);
+    mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
     initByIntent(getIntent());
   }
 
@@ -51,16 +60,21 @@ public class AVChatActivity extends AVBaseActivity {
   }
 
   protected void initActionBar(String title) {
-    ActionBar actionBar = getActionBar();
-    if (actionBar != null) {
-      if (title != null) {
-        actionBar.setTitle(title);
-      }
-      actionBar.setDisplayUseLogoEnabled(false);
-      actionBar.setDisplayHomeAsUpEnabled(true);
-    } else {
-      LogUtils.i("action bar is null, so no title, please set an ActionBar style for activity");
-    }
+//    ActionBar actionBar = getActionBar();
+//    if (actionBar != null) {
+//      if (title != null) {
+//        actionBar.setTitle(title);
+//      }
+//      actionBar.setDisplayUseLogoEnabled(false);
+//      actionBar.setDisplayHomeAsUpEnabled(true);
+//    } else {
+//      LogUtils.i("action bar is null, so no title, please set an ActionBar style for activity");
+//    }
+      setTitle(title);
+    mToolbar.setTitleTextColor(Color.WHITE);
+    setSupportActionBar(mToolbar);
+    Log.d(TAG, "initActionBar: " + title);
+
   }
 
   public void onEvent(EmptyEvent emptyEvent) {}
