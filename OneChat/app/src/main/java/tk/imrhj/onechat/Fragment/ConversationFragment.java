@@ -1,5 +1,6 @@
 package tk.imrhj.onechat.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,25 +12,28 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.Conversation;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
+import com.avoscloud.leanchatlib.activity.AVChatActivity;
+import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
+import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import tk.imrhj.onechat.Activity.ConversationFragmentUpdateEvent;
 import tk.imrhj.onechat.Adapter.UserListAdapter;
 import tk.imrhj.onechat.R;
+import tk.imrhj.onechat.Util.Utils;
 
 /**
  * Created by rhj on 15/12/16.
@@ -38,7 +42,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
     private static final String TAG = "ConversationFragment";
     private ListView mChatList;
     private List<AVIMConversation> mConversationList;
-    private List<UserListAdapter.User> mRoomList;
+    private List<UserListAdapter.User> mRoomItem;
     private UserListAdapter mAdapter;
     private ConversationManager mConversationManager;
 
@@ -60,8 +64,8 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
      * 初始化ListView
      */
     private void initListView() {
-        mRoomList = new ArrayList<>();
-        mAdapter = new UserListAdapter(getActivity(), mRoomList);
+        mRoomItem = new ArrayList<>();
+        mAdapter = new UserListAdapter(getActivity(), mRoomItem);
         mChatList.setAdapter(mAdapter);
         mChatList.setOnItemClickListener(this);
     }
@@ -96,6 +100,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
                     List<Room> sortedRooms = sortRooms(roomList);
                     updateLastMessage(sortedRooms);
                     addToRoomList(sortedRooms);
+                    mAdapter.notifyDataSetChanged();
 
                 } else {
                     Log.e(TAG, "done: " + exception.getMessage());
@@ -106,12 +111,18 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
     }
 
     private void addToRoomList(List<Room> roomList) {
-        for (Room room: roomList) {
+        mRoomItem.clear();
+        String selfID = ChatManager.getInstance().getSelfId();
+        Date date;
+        for (Room room : roomList) {
             UserListAdapter.User user = new UserListAdapter.User();
-            user.mUserID = room.getConversation().getMembers().toString();
-            Log.d(TAG, "addToRoomList: " + user.mUserID);
-
+            user.mUserID = Utils.getConversationUserID(selfID, room.getConversation().getMembers());
+            date = new Date(room.getLastModifyTime());
+            user.mLastTime = date.toString();
+            Log.d(TAG, "addToRoomList: " + user.mLastTime);
+            mRoomItem.add(user);
         }
+
     }
 
     /**
@@ -185,6 +196,9 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getContext(), AVChatActivity.class);
+        intent.putExtra(Constants.CONVERSATION_ID, mRoomItem.get(position).mUserID);
+        getContext().startActivity(intent);
 
     }
 }

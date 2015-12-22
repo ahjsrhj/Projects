@@ -1,5 +1,9 @@
 package tk.imrhj.onechat.Activity;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,9 +13,17 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.avoscloud.leanchatlib.activity.AVChatActivity;
+import com.avoscloud.leanchatlib.utils.Constants;
 
 import java.util.Arrays;
 import java.util.List;
@@ -120,7 +132,35 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(TAG, "onOptionsItemSelected: ");
+        if (item.getItemId() == R.id.action_add) {
+            showEditTextDialog();
+        }
         return true;
+    }
+
+    private void showEditTextDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.dialog_edit_view, null);
+        builder.setView(layout);
+        final EditText editText = (EditText) layout.findViewById(R.id.edtTxt_addChat);
+        builder.setTitle("开启对话");
+        builder.setPositiveButton("对话", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String userID = editText.getText().toString();
+                if (userID.equals("")) {
+                    Toast.makeText(MainActivity.this, "请输入ID", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(MainActivity.this, AVChatActivity.class);
+                intent.putExtra(Constants.CONVERSATION_ID, userID);
+                startActivity(intent);
+
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
+
     }
 }
