@@ -1,4 +1,4 @@
-package tk.imrhj.onechat.Activity;
+package tk.imrhj.onechat.Util;
 
 /**
  * Created by rhj on 15/12/16.

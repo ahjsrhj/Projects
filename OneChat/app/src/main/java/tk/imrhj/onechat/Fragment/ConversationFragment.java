@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import tk.imrhj.onechat.Activity.ConversationFragmentUpdateEvent;
+import tk.imrhj.onechat.Util.ConversationFragmentUpdateEvent;
 import tk.imrhj.onechat.Adapter.roomListAdapter;
 import tk.imrhj.onechat.R;
 import tk.imrhj.onechat.Util.Utils;
@@ -117,10 +117,13 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
         for (Room room : roomList) {
             roomListAdapter.User user = new roomListAdapter.User();
             user.mUserID = Utils.getConversationUserID(selfID, room.getConversation().getMembers());
-            date = new Date(room.getLastModifyTime());
-            user.mLastTime = date.toString();
+            user.mLastTime = Utils.fromatTime(new Date(room.getLastModifyTime()));
             Log.d(TAG, "addToRoomList: " + user.mLastTime);
             user.mConversationID = room.getConversationId();
+            if (room.getLastMessage() != null) {
+                user.mLastMSG = room.getLastMessage().getContent();
+            }
+            user.mAvatarIcon = ConversationManager.getConversationIcon(room.getConversation());
             mRoomItem.add(user);
         }
 

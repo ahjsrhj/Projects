@@ -13,8 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +31,7 @@ import tk.imrhj.onechat.Fragment.ContactFragment;
 import tk.imrhj.onechat.Fragment.ConversationFragment;
 import tk.imrhj.onechat.Fragment.PersonalProfileFragment;
 import tk.imrhj.onechat.R;
+import tk.imrhj.onechat.Util.ConversationFragmentUpdateEvent;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

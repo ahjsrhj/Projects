@@ -1,11 +1,14 @@
 package tk.imrhj.onechat.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
@@ -56,6 +59,7 @@ public class roomListAdapter extends BaseAdapter {
             viewHolder.TVUserID = (TextView) convertView.findViewById(R.id.tv_chat_lsit_userid);
             viewHolder.TVLastMSG = (TextView) convertView.findViewById(R.id.tv_chat_list_lastmsg);
             viewHolder.TVLastTime = (TextView) convertView.findViewById(R.id.tv_chat_list_last_time);
+            viewHolder.imageView = (RoundedImageView) convertView.findViewById(R.id.tv_chat_list_avatar_icon);
             convertView.setTag(viewHolder);
         } else {
             //通过tag找到缓存的布局
@@ -63,9 +67,9 @@ public class roomListAdapter extends BaseAdapter {
         }
         User user = mUserList.get(position);
         viewHolder.TVUserID.setText(user.mUserID);
-
         viewHolder.TVLastMSG.setText(user.mLastMSG);
         viewHolder.TVLastTime.setText(user.mLastTime);
+        viewHolder.imageView.setImageBitmap(user.mAvatarIcon);
 
         return convertView;
     }
@@ -74,6 +78,7 @@ public class roomListAdapter extends BaseAdapter {
         public TextView TVUserID;
         public TextView TVLastMSG;
         public TextView TVLastTime;
+        public RoundedImageView imageView;
     }
 
     public static class User {
@@ -82,5 +87,7 @@ public class roomListAdapter extends BaseAdapter {
         public String mLastMSG;
         public String mLastTime;
         public String mConversationID;
+        public Bitmap mAvatarIcon;
+
     }
 }
