@@ -8,7 +8,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.avos.avoscloud.im.v2.AVIMConversation;
+import com.avos.avoscloud.im.v2.Conversation;
+import com.avoscloud.leanchatlib.model.Room;
+import com.avoscloud.leanchatlib.utils.PhotoUtils;
+import com.avoscloud.leanchatlib.utils.ThirdPartUserUtils;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -69,7 +75,13 @@ public class roomListAdapter extends BaseAdapter {
         viewHolder.TVUserID.setText(user.mUserID);
         viewHolder.TVLastMSG.setText(user.mLastMSG);
         viewHolder.TVLastTime.setText(user.mLastTime);
-        viewHolder.imageView.setImageBitmap(user.mAvatarIcon);
+
+        String avatar = ThirdPartUserUtils.getInstance().getUserAvatar(user.mUserID);
+        ImageLoader.getInstance().displayImage(avatar, viewHolder.imageView, PhotoUtils.avatarImageOptions);
+
+        AVIMConversation conversation = user.room.getConversation();
+        if (null != conversation) {
+        }
 
         return convertView;
     }
@@ -82,12 +94,12 @@ public class roomListAdapter extends BaseAdapter {
     }
 
     public static class User {
-
+        public Room room;
         public String mUserID;
         public String mLastMSG;
         public String mLastTime;
         public String mConversationID;
-        public Bitmap mAvatarIcon;
+//        public Bitmap mAvatarIcon;
 
     }
 }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.avos.avoscloud.AVException;
@@ -22,6 +23,7 @@ import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.ConversationManager;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import tk.imrhj.onechat.Activity.MainActivity;
 import tk.imrhj.onechat.Util.ConversationFragmentUpdateEvent;
 import tk.imrhj.onechat.Adapter.roomListAdapter;
 import tk.imrhj.onechat.R;
@@ -38,13 +41,14 @@ import tk.imrhj.onechat.Util.Utils;
 /**
  * Created by rhj on 15/12/16.
  */
-public class ConversationFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class ConversationFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     private static final String TAG = "ConversationFragment";
     private ListView mChatList;
     private List<AVIMConversation> mConversationList;
     private List<roomListAdapter.User> mRoomItem;
     private roomListAdapter mAdapter;
     private ConversationManager mConversationManager;
+    private FloatingActionButton mFAButton;
 
     @Nullable
     @Override
@@ -52,6 +56,10 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
         View view = inflater.inflate(R.layout.fragment_chat_list, container, false);
         mChatList = (ListView) view.findViewById(R.id.lv_chat_list);
         mChatList.setEmptyView(view.findViewById(R.id.tv_chat_list_empty_view));
+        mFAButton = (FloatingActionButton) view.findViewById(R.id.fab_add);
+        mFAButton.attachToListView(mChatList);
+        mFAButton.setOnClickListener(this);
+
         mConversationManager = ConversationManager.getInstance();
         EventBus.getDefault().register(this);
         //首先为ListView设置默认的Adapter
@@ -123,7 +131,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
             if (room.getLastMessage() != null) {
                 user.mLastMSG = room.getLastMessage().getContent();
             }
-            user.mAvatarIcon = ConversationManager.getConversationIcon(room.getConversation());
+            user.room = room;
             mRoomItem.add(user);
         }
 
@@ -203,6 +211,18 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
         Intent intent = new Intent(getContext(), AVChatActivity.class);
         intent.putExtra(Constants.CONVERSATION_ID, mRoomItem.get(position).mConversationID);
         getContext().startActivity(intent);
+
+    }
+
+    /**
+     * Called when a view has been clicked.
+     *
+     * @param v The view that was clicked.
+     */
+    @Override
+    public void onClick(View v) {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.showEditTextDialog();
 
     }
 }

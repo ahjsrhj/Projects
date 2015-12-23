@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,9 +14,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -33,7 +36,7 @@ import tk.imrhj.onechat.Fragment.PersonalProfileFragment;
 import tk.imrhj.onechat.R;
 import tk.imrhj.onechat.Util.ConversationFragmentUpdateEvent;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
     private Toolbar toolbar;
     private ViewPager viewPager;
@@ -95,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setTabsFromPagerAdapter(adapter);
     }
 
+    /**
+     * Called when a view has been clicked.
+     *
+     * @param v The view that was clicked.
+     */
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, "onClick: ");
+    }
+
     public class TabFragmentAdapter extends FragmentStatePagerAdapter {
 
         private List<Fragment> mFragments;
@@ -137,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void showEditTextDialog() {
+    public void showEditTextDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.dialog_edit_view, null);
