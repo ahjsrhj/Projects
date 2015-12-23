@@ -1,9 +1,11 @@
 package tk.imrhj.onechat.Util;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.avoscloud.leanchatlib.controller.ChatManager;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -19,6 +21,7 @@ public class Utils {
         return selfID.equals(userList.get(0)) ? userList.get(1) : userList.get(0);
     }
 
+    @SuppressLint("SimpleDateFormat")
     public static String fromatTime(Date date) {
         Calendar messageCalendar = new GregorianCalendar();
         messageCalendar.setTime(date);
@@ -26,10 +29,16 @@ public class Utils {
         nowCalendar.setTime(new Date(System.currentTimeMillis()));
 
 
-        if (nowCalendar.get(Calendar.DAY_OF_YEAR) == messageCalendar.get(Calendar.DAY_OF_YEAR)) {
-            return messageCalendar.get(Calendar.HOUR) + ":" + messageCalendar.get(Calendar.MINUTE);
-        } else if (nowCalendar.get(Calendar.DAY_OF_YEAR)
-                - messageCalendar.get(Calendar.DAY_OF_YEAR) == 1) {
+
+
+        int dayOfYear = messageCalendar.get(Calendar.DAY_OF_YEAR);
+
+        if (nowCalendar.get(Calendar.DAY_OF_YEAR) == dayOfYear) {
+            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+            return fmt.format(messageCalendar.getTime());
+
+
+        } else if (nowCalendar.get(Calendar.DAY_OF_YEAR) - dayOfYear == 1) {
             return "昨天";
         } else {
             return messageCalendar.get(Calendar.YEAR) + "/"

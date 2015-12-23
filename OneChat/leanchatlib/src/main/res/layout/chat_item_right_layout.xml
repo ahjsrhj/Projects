@@ -50,6 +50,8 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:src="@drawable/chat_btn_fail_resend"/>
+
+
         </FrameLayout>
 
         <LinearLayout
@@ -62,12 +64,20 @@
             android:paddingLeft="40dp">
         </LinearLayout>
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/chat_right_iv_avatar"
             android:layout_alignParentRight="true"
-            style="@style/chat_avatar"
             android:layout_marginLeft="10dp"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true"
+            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:src="#b2b2b2"
+            android:scaleType="fitCenter"
+            app:riv_corner_radius="30dip"
+            app:riv_border_color="#333333"
+            app:riv_mutate_background="true"
+            />
     </RelativeLayout>
 
     <TextView
