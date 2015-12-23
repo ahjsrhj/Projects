@@ -117,7 +117,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
         for (Room room : roomList) {
             roomListAdapter.User user = new roomListAdapter.User();
             user.mUserID = Utils.getConversationUserID(selfID, room.getConversation().getMembers());
-            user.mLastTime = Utils.fromatTime(new Date(room.getLastModifyTime()));
+            user.mLastTime = Utils.formatTime(new Date(room.getLastModifyTime()));
             Log.d(TAG, "addToRoomList: " + user.mLastTime);
             user.mConversationID = room.getConversationId();
             if (room.getLastMessage() != null) {

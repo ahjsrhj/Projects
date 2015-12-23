@@ -22,7 +22,7 @@ public class Utils {
     }
 
     @SuppressLint("SimpleDateFormat")
-    public static String fromatTime(Date date) {
+    public static String formatTime(Date date) {
         Calendar messageCalendar = new GregorianCalendar();
         messageCalendar.setTime(date);
         Calendar nowCalendar = new GregorianCalendar();
