@@ -1,5 +1,8 @@
 package tk.imrhj.onechat.Fragment;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -223,6 +229,32 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
     public void onClick(View v) {
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.showEditTextDialog();
+
+    }
+
+    public void showEditTextDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.dialog_edit_view, null);
+        builder.setView(layout);
+        final EditText editText = (EditText) layout.findViewById(R.id.edtTxt_addChat);
+        builder.setTitle("请输入ID");
+        builder.setPositiveButton("对话", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String userID = editText.getText().toString();
+                if (userID.equals("")) {
+                    Toast.makeText(getActivity(), "请输入ID", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(getActivity(), AVChatActivity.class);
+                intent.putExtra(Constants.MEMBER_ID, userID);
+                startActivity(intent);
+
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
 
     }
 }
