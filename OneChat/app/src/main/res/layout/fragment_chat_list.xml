@@ -5,12 +5,16 @@
     android:id="@+id/fragment_chat_main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <ListView
-        android:id="@+id/lv_chat_list"
+    <jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout
+        android:id="@+id/main_swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </ListView>
+        <ListView
+            android:id="@+id/lv_chat_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+    </jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout>
     <com.melnykov.fab.FloatingActionButton
         xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:id="@+id/fab_add"

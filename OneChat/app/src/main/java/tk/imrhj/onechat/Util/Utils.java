@@ -48,4 +48,14 @@ public class Utils {
         }
     }
 
+
+    /**
+     * 处理消息数据，并返回正确的消息。
+     * @param jsonMessage
+     * @return
+     */
+    public String formatJsonMessage(String jsonMessage) {
+        return null;
+    }
+
 }

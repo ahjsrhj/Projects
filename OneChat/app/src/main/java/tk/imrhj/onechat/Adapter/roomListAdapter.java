@@ -80,9 +80,6 @@ public class RoomListAdapter extends BaseAdapter {
         String avatar = ThirdPartUserUtils.getInstance().getUserAvatar(user.mUserID);
         ImageLoader.getInstance().displayImage(avatar, viewHolder.imageView, PhotoUtils.avatarImageOptions);
 
-        AVIMConversation conversation = user.room.getConversation();
-        if (null != conversation) {
-        }
 
         return convertView;
     }

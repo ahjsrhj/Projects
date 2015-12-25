@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMSingleMessageQueryCallback;
 import com.avoscloud.leanchatlib.activity.AVChatActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
+import com.avoscloud.leanchatlib.controller.MessageHelper;
 import com.avoscloud.leanchatlib.event.ImTypeMessageEvent;
 import com.avoscloud.leanchatlib.model.Room;
 import com.avoscloud.leanchatlib.utils.Constants;
@@ -37,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
 import tk.imrhj.onechat.Activity.MainActivity;
 import tk.imrhj.onechat.Util.ConversationFragmentUpdateEvent;
 import tk.imrhj.onechat.Adapter.RoomListAdapter;
@@ -46,7 +49,7 @@ import tk.imrhj.onechat.Util.Utils;
 /**
  * Created by rhj on 15/12/16.
  */
-public class ConversationFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class ConversationFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, WaveSwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "ConversationFragment";
     private ListView mChatList;
     private List<AVIMConversation> mConversationList;
@@ -54,6 +57,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
     private RoomListAdapter mAdapter;
     private ConversationManager mConversationManager;
     private FloatingActionButton mFAButton;
+    private WaveSwipeRefreshLayout mWaveSwipeRefreshLayout;
 
     @Nullable
     @Override
@@ -64,6 +68,10 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
         mFAButton = (FloatingActionButton) view.findViewById(R.id.fab_add);
         mFAButton.attachToListView(mChatList);
         mFAButton.setOnClickListener(this);
+        mWaveSwipeRefreshLayout = (WaveSwipeRefreshLayout) view.findViewById(R.id.main_swipe);
+        mWaveSwipeRefreshLayout.setWaveColor(getResources().getColor(R.color.colorPrimary));
+        mWaveSwipeRefreshLayout.setOnRefreshListener(this);
+
 
         mConversationManager = ConversationManager.getInstance();
         EventBus.getDefault().register(this);
@@ -93,6 +101,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
     public void onResume() {
         super.onResume();
         updateConversationList();
+        Log.d(TAG, "onResume: ");
     }
 
     @Override
@@ -100,6 +109,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
+
 
     /**
      * 更新列表
@@ -129,10 +139,11 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
             RoomListAdapter.User user = new RoomListAdapter.User();
             user.mUserID = Utils.getConversationUserID(selfID, room.getConversation().getMembers());
             user.mLastTime = Utils.formatTime(new Date(room.getLastModifyTime()));
-            Log.d(TAG, "addToRoomList: " + user.mLastTime);
             user.mConversationID = room.getConversationId();
             if (room.getLastMessage() != null) {
-                user.mLastMSG = room.getLastMessage().getContent();
+                user.mLastMSG = MessageHelper.outlineOfMsg(room.getLastMessage()).toString();
+//                user.mLastMSG = room.getLastMessage().getContent();
+                Log.d(TAG, "addToRoomList: " + user.mLastMSG);
             }
             user.room = room;
             mRoomItem.add(user);
@@ -151,14 +162,13 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
                 conversation.getLastMessage(new AVIMSingleMessageQueryCallback() {
                     @Override
                     public void done(AVIMMessage avimMessage, AVIMException e) {
-                        if (null != e && null != avimMessage) {
+                        if (null == e && null != avimMessage) {
                             room.setLastMessage(avimMessage);
                         }
                     }
                 });
             }
         }
-
     }
 
 
@@ -224,9 +234,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
      */
     @Override
     public void onClick(View v) {
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.showEditTextDialog();
-
+        showEditTextDialog();
     }
 
     public void showEditTextDialog() {
@@ -255,4 +263,11 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
         builder.show();
 
     }
+
+    @Override
+    public void onRefresh() {
+        updateConversationList();
+        mWaveSwipeRefreshLayout.setRefreshing(false);
+    }
+
 }

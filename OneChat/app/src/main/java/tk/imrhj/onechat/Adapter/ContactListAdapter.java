@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.avoscloud.leanchatlib.utils.PhotoUtils;
@@ -14,7 +13,6 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import tk.imrhj.onechat.R;
 
@@ -67,7 +65,7 @@ public class ContactListAdapter extends BaseAdapter {
         if (null == convertView) {
             viewHolder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.list_view_contact_list, null);
-            viewHolder.TVUserID = (TextView) convertView.findViewById(R.id.tv_contact_lsit_userid);
+            viewHolder.TVUserID = (TextView) convertView.findViewById(R.id.tv_contact_list_userid);
             viewHolder.TVLastLogin =
                     (TextView) convertView.findViewById(R.id.tv_contact_list_last_login);
             viewHolder.IVAvatarIcon =

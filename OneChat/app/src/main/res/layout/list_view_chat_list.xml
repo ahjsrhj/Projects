@@ -30,6 +30,7 @@
             android:textSize="16sp"
             android:textColor="@color/colorPrimary"
             android:id="@+id/tv_chat_lsit_userid"
+            android:lines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
@@ -37,6 +38,7 @@
             android:textSize="14sp"
             android:textColor="@color/colorSecondaryText"
             android:id="@+id/tv_chat_list_lastmsg"
+            android:lines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -46,6 +48,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:id="@+id/tv_chat_list_last_time"
+        android:lines="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

@@ -3,13 +3,13 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:gravity="center_vertical"
-    android:minHeight="72dp"
-    android:layout_height="72dp">
+    android:minHeight="56dp"
+    android:layout_height="56dp">
 
     <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_height="50dp"
-        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_width="40dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:id="@+id/tv_contact_list_avatar_icon"
@@ -29,8 +29,8 @@
         <TextView
             android:textSize="16sp"
             android:textColor="@color/colorPrimary"
-            android:id="@+id/tv_contact_lsit_userid"
-            android:text="2013014053"
+            android:id="@+id/tv_contact_list_userid"
+            android:lines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
@@ -38,6 +38,7 @@
             android:textSize="14sp"
             android:textColor="@color/colorSecondaryText"
             android:id="@+id/tv_contact_list_say"
+            android:lines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
