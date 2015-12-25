@@ -22,18 +22,19 @@ import tk.imrhj.onechat.R;
 
 /**
  * Created by rhj on 15/12/16.
+ * 显示聊天室的适配器
  */
-public class roomListAdapter extends BaseAdapter {
+public class RoomListAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<User> mUserList;
 
     //构造方法
-    public roomListAdapter(Context context) {
+    public RoomListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
     }
 
     //构造方法
-    public roomListAdapter(Context context, List<User> userList) {
+    public RoomListAdapter(Context context, List<User> userList) {
         mInflater = LayoutInflater.from(context);
         mUserList = userList;
     }

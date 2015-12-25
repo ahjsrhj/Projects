@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class Utils {
     private static final String TAG = "Utils";
+    public static final String ALL_USER = "561e2a6260b22ed7ca5fbf60";
 
     public static String getConversationUserID(String selfID, List<String> userList) {
         return selfID.equals(userList.get(0)) ? userList.get(1) : userList.get(0);

@@ -109,12 +109,10 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
             @Override
             public void done(List<Room> roomList, AVException exception) {
                 if (null == exception) {
-                    Log.d(TAG, "done: " + roomList.size());
                     List<Room> sortedRooms = sortRooms(roomList);
                     updateLastMessage(sortedRooms);
                     addToRoomList(sortedRooms);
                     mAdapter.notifyDataSetChanged();
-
                 } else {
                     Log.e(TAG, "done: " + exception.getMessage());
                 }

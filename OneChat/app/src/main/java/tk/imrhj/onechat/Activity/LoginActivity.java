@@ -19,6 +19,7 @@ import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
 import butterknife.Bind;
 import butterknife.OnClick;
 import tk.imrhj.onechat.R;
+import tk.imrhj.onechat.Util.Utils;
 
 public class LoginActivity extends AVBaseActivity {
     @Bind(R.id.activity_login_et_username)
@@ -49,7 +50,7 @@ public class LoginActivity extends AVBaseActivity {
             @Override
             public void done(AVIMClient avimClient, AVIMException e) {
                 if (null == e) {
-                    AVIMConversation conversation = avimClient.getConversation("561e2a6260b22ed7ca5fbf60");
+                    AVIMConversation conversation = avimClient.getConversation(Utils.ALL_USER);
                     conversation.join(new AVIMConversationCallback() {
                         @Override
                         public void done(AVIMException e) {
