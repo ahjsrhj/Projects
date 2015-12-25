@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -40,7 +39,7 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import tk.imrhj.onechat.Activity.MainActivity;
 import tk.imrhj.onechat.Util.ConversationFragmentUpdateEvent;
-import tk.imrhj.onechat.Adapter.roomListAdapter;
+import tk.imrhj.onechat.Adapter.RoomListAdapter;
 import tk.imrhj.onechat.R;
 import tk.imrhj.onechat.Util.Utils;
 
@@ -51,8 +50,8 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
     private static final String TAG = "ConversationFragment";
     private ListView mChatList;
     private List<AVIMConversation> mConversationList;
-    private List<roomListAdapter.User> mRoomItem;
-    private roomListAdapter mAdapter;
+    private List<RoomListAdapter.User> mRoomItem;
+    private RoomListAdapter mAdapter;
     private ConversationManager mConversationManager;
     private FloatingActionButton mFAButton;
 
@@ -79,7 +78,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
      */
     private void initListView() {
         mRoomItem = new ArrayList<>();
-        mAdapter = new roomListAdapter(getActivity(), mRoomItem);
+        mAdapter = new RoomListAdapter(getActivity(), mRoomItem);
         mChatList.setAdapter(mAdapter);
         mChatList.setOnItemClickListener(this);
     }
@@ -129,7 +128,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
         String selfID = ChatManager.getInstance().getSelfId();
         Date date;
         for (Room room : roomList) {
-            roomListAdapter.User user = new roomListAdapter.User();
+            RoomListAdapter.User user = new RoomListAdapter.User();
             user.mUserID = Utils.getConversationUserID(selfID, room.getConversation().getMembers());
             user.mLastTime = Utils.formatTime(new Date(room.getLastModifyTime()));
             Log.d(TAG, "addToRoomList: " + user.mLastTime);
@@ -234,7 +233,8 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
 
     public void showEditTextDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater =
+                (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.dialog_edit_view, null);
         builder.setView(layout);
         final EditText editText = (EditText) layout.findViewById(R.id.edtTxt_addChat);

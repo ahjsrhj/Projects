@@ -8,8 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avoscloud.leanchatlib.activity.AVBaseActivity;
 import com.avoscloud.leanchatlib.controller.ChatManager;
 import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
@@ -29,7 +31,7 @@ public class LoginActivity extends AVBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        nameView.setText("rhj");
+        nameView.setText("Tom");
         loginBtn.performClick();
 
 //        startActivity(new Intent(this, MainActivity.class));
@@ -47,9 +49,18 @@ public class LoginActivity extends AVBaseActivity {
             @Override
             public void done(AVIMClient avimClient, AVIMException e) {
                 if (null == e) {
-                    finish();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    AVIMConversation conversation = avimClient.getConversation("561e2a6260b22ed7ca5fbf60");
+                    conversation.join(new AVIMConversationCallback() {
+                        @Override
+                        public void done(AVIMException e) {
+                            if (null == e) {
+                                finish();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+
+                        }
+                    });
                 } else {
                     showToast(e.toString());
                 }
