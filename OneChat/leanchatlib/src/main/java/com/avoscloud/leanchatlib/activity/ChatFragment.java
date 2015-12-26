@@ -66,6 +66,8 @@ public class ChatFragment extends android.support.v4.app.Fragment {
 
   protected String localCameraPath = PathUtils.getPicturePathByCurrentTime();
 
+    protected AVIMMessage lastMessage;
+
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -183,12 +185,16 @@ public class ChatFragment extends android.support.v4.app.Fragment {
    * 同理，避免无效消息，此处加了 conversation id 判断
    */
   public void onEvent(ImTypeMessageEvent event) {
-    if (null != imConversation && null != event &&
-      imConversation.getConversationId().equals(event.conversation.getConversationId())) {
-      itemAdapter.addMessage(event.message);
-      itemAdapter.notifyDataSetChanged();
-      scrollToBottom();
-    }
+      if (null != imConversation && null != event &&
+              imConversation.getConversationId().equals(event.conversation.getConversationId())) {
+          if (lastMessage != null && lastMessage == event.message) {
+              return;
+          }
+          lastMessage = event.message;
+          itemAdapter.addMessage(event.message);
+          itemAdapter.notifyDataSetChanged();
+          scrollToBottom();
+      }
   }
 
   /**

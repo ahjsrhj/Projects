@@ -142,8 +142,7 @@ public class ConversationFragment extends Fragment implements AdapterView.OnItem
             user.mConversationID = room.getConversationId();
             if (room.getLastMessage() != null) {
                 user.mLastMSG = MessageHelper.outlineOfMsg(room.getLastMessage()).toString();
-//                user.mLastMSG = room.getLastMessage().getContent();
-                Log.d(TAG, "addToRoomList: " + user.mLastMSG);
+//                Log.d(TAG, "addToRoomList: " + user.mLastMSG);
             }
             user.room = room;
             mRoomItem.add(user);
