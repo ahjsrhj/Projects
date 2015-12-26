@@ -374,9 +374,13 @@ public class ChatFragment extends android.support.v4.app.Fragment {
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-
+          if (!inputBottomBar.isHideMoreLayout()) {
+            inputBottomBar.hideMoreLayout();
+            return true;
+          }
         }
-        return false;
+        AVChatActivity activity = (AVChatActivity) getActivity();
+        return activity.onSuperKeyDown(keyCode, event);
     }
 
 

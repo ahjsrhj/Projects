@@ -20,6 +20,8 @@ import com.avoscloud.leanchatlib.model.ConversationType;
 import com.avoscloud.leanchatlib.utils.Constants;
 import com.avoscloud.leanchatlib.utils.LogUtils;
 
+import java.security.Key;
+
 /**
  * Created by wli on 15/9/18.
  */
@@ -108,5 +110,9 @@ public class AVChatActivity extends AVBaseActivity {
   @Override
   public boolean onKeyDown(int keyCode, KeyEvent event) {
     return chatFragment.onKeyDown(keyCode, event);
+  }
+
+  public boolean onSuperKeyDown(int keyCode, KeyEvent event) {
+    return super.onKeyDown(keyCode, event);
   }
 }

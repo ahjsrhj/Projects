@@ -119,6 +119,18 @@ public class InputBottomBar extends LinearLayout {
     moreLayout.setVisibility(View.GONE);
   }
 
+  /**
+   * 获取底部Layout的显示状态
+   * @return 当隐藏时,返回 true 否则返回 false
+   */
+  public boolean isHideMoreLayout() {
+    if (moreLayout.getVisibility() == View.GONE) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 
   //TODO 这一坨代码还是太丑了，因为 lib 里不能使用 butterknife 暂时如此
   private void initView(Context context) {
@@ -130,6 +142,7 @@ public class InputBottomBar extends LinearLayout {
     voiceBtn = findViewById(R.id.input_bar_btn_voice);
     keyboardBtn = findViewById(R.id.input_bar_btn_keyboard);
     moreLayout = findViewById(R.id.input_bar_layout_more);
+    moreLayout.setVisibility(GONE);
     emotionLayout = findViewById(R.id.input_bar_layout_emotion);
     emotionPager = (ViewPager)findViewById(R.id.input_bar_viewpager_emotin);
     recordBtn = (RecordButton) findViewById(R.id.input_bar_btn_record);
@@ -159,7 +172,7 @@ public class InputBottomBar extends LinearLayout {
       @Override
       public void onClick(View v) {
         boolean showEmotionView =
-          (GONE == moreLayout.getVisibility() || GONE == emotionLayout.getVisibility());
+                (GONE == moreLayout.getVisibility() || GONE == emotionLayout.getVisibility());
         moreLayout.setVisibility(showEmotionView ? VISIBLE : GONE);
         emotionLayout.setVisibility(showEmotionView ? VISIBLE : GONE);
         actionLayout.setVisibility(View.GONE);
@@ -207,7 +220,7 @@ public class InputBottomBar extends LinearLayout {
         }, MIN_INTERVAL_SEND_MESSAGE);
 
         EventBus.getDefault().post(
-          new InputBottomBarTextEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, content, getTag()));
+                new InputBottomBarTextEvent(InputBottomBarEvent.INPUTBOTTOMBAR_SEND_TEXT_ACTION, content, getTag()));
       }
     });
 
