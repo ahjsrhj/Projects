@@ -32,7 +32,6 @@ public class LoginActivity extends AVBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        nameView.setText("rhj");
 //        loginBtn.performClick();
 
 //        startActivity(new Intent(this, MainActivity.class));
