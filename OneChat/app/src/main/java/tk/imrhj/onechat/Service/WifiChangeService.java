@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,6 +32,7 @@ import tk.imrhj.onechat.R;
 
 /**
  * Created by rhj on 15/12/28.
+ * 当Wifi连接发生变化时， 弹出提示是否连接网络。
  */
 public class WifiChangeService extends Service {
     private String username;
@@ -47,36 +49,18 @@ public class WifiChangeService extends Service {
     private final int CONTENT_FAILD = 0;
 
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message message) {
-            switch (message.what) {
-                case CONTENT_SUCCESS:
-                    haveConnect = true;
-                    System.out.println("登陆成功");
-                    showToast("登陆成功");
-                    break;
-                case CONTENT_FAILD:
-                    System.out.println("登陆失败");
-                    haveConnect = false;
-                    showToast("登陆失败\n" + message.getData().getString("string"));
-                    System.out.println(message.getData().getString("string"));
-                    break;
-            }
-        }
-    };
+    private MyHandler handler;
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new MsgBinder();
     }
-
 
     @Override
     public void onCreate() {
         super.onCreate();
-        SharedPreferences preferences = getSharedPreferences(getString(R.string.string_file_name), MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(getString(R.string.string_file_name), MODE_MULTI_PROCESS);
         username = preferences.getString(getString(R.string.string_user_name), "");
         password = preferences.getString(getString(R.string.string_pass_word), "");
         String string = "action=login&username=" + username + "&password=" + password
@@ -85,6 +69,7 @@ public class WifiChangeService extends Service {
         userLength = String.valueOf(userPost.length());
 
         keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        handler = new MyHandler();
     }
 
     @Override
@@ -103,33 +88,36 @@ public class WifiChangeService extends Service {
         if (wifiConnect && !haveConnect) {
 
             String SSID = info.getSSID();
-            if (showDialog && ((SSID.equals("\"WXXY\"")) || (SSID.equals("WXXY")))) {
-                if (!keyguardManager.inKeyguardRestrictedInputMode()) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                    dialog.setTitle("提示")
-                            .setMessage("探子来报!WXXY已连接!\n是否登陆?")
-                            .setPositiveButton("登陆", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    doLogin(userPost, userLength);
-                                    showDialog = true;
-                                }
-                            })
-                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    haveConnect = false;
-                                    showDialog = true;
-                                }
-                            });
-                    AlertDialog ad = dialog.create();
-                    ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                    ad.setCanceledOnTouchOutside(false);
-                    ad.show();
-                    showDialog = false;
+            if (((SSID.equals("\"WXXY\"")) || (SSID.equals("WXXY")))) {
+                if (showDialog) {
+                    if (!keyguardManager.inKeyguardRestrictedInputMode()) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                        dialog.setTitle("提示")
+                                .setMessage("探子来报!WXXY已连接!\n是否登陆?")
+                                .setPositiveButton("登陆", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        doLogin(userPost, userLength);
+                                        showDialog = true;
+                                    }
+                                })
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        haveConnect = false;
+                                        showDialog = true;
+                                    }
+                                });
+                        AlertDialog ad = dialog.create();
+                        ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                        ad.setCanceledOnTouchOutside(false);
+                        ad.show();
+                        showDialog = false;
+                    }
                 }
 
-
+            } else {
+                showToast("首次使用，请连接到WXXY无线网络!");
             }
         }
         flags = START_STICKY;
@@ -240,5 +228,37 @@ public class WifiChangeService extends Service {
     public void showToast(String string) {
         Toast toast = Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    /**
+     * 在MainAcitivity中获取Service实例
+     */
+    private class MsgBinder extends Binder {
+        public WifiChangeService getService() {
+            return WifiChangeService.this;
+        }
+    }
+
+    private class MyHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case CONTENT_SUCCESS:
+                    haveConnect = true;
+                    System.out.println("登陆成功");
+                    showToast("登陆成功");
+                    break;
+                case CONTENT_FAILD:
+                    System.out.println("登陆失败");
+                    haveConnect = false;
+                    showToast("登陆失败\n" + msg.getData().getString("string"));
+                    System.out.println(msg.getData().getString("string"));
+                    break;
+            }
+        }
+    }
+
+    public boolean isHaveConnect() {
+        return haveConnect;
     }
 }

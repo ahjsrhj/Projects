@@ -38,10 +38,16 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.avos.avoscloud.PushService" />
 
         <activity android:name="com.avoscloud.leanchatlib.activity.ImageBrowserActivity" />
         <activity android:name=".Activity.MainActivity"></activity>
+
+        <service android:name="com.avos.avoscloud.PushService" />
+
+        <service
+            android:name=".Service.WifiChangeService"
+            android:process="tk.imrhj.onechat.WifiChangeService" >
+        </service>
     </application>
 
 </manifest>

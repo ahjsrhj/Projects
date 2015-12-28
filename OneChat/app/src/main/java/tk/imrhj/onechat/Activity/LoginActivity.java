@@ -20,6 +20,7 @@ import com.avoscloud.leanchatlib.controller.ConversationEventHandler;
 import butterknife.Bind;
 import butterknife.OnClick;
 import tk.imrhj.onechat.R;
+import tk.imrhj.onechat.Service.WifiChangeService;
 import tk.imrhj.onechat.Util.Utils;
 
 public class LoginActivity extends AVBaseActivity {
@@ -57,7 +58,7 @@ public class LoginActivity extends AVBaseActivity {
      * 当打开应用时读取数据
      */
     private void loadData() {
-        SharedPreferences preferences = getSharedPreferences(getString(R.string.string_file_name), MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(getString(R.string.string_file_name), MODE_MULTI_PROCESS);
         nameView.setText(preferences.getString(getString(R.string.string_user_name), ""));
         passView.setText(preferences.getString(getString(R.string.string_pass_word), ""));
     }
@@ -65,12 +66,13 @@ public class LoginActivity extends AVBaseActivity {
 
     @OnClick(R.id.activity_login_btn_login)
     public void onLoginClick(View v) {
-        String clientId = nameView.getText().toString();
-        String passWd = null;
+        final String clientId = nameView.getText().toString();
+        final String passWd = null;
         if (TextUtils.isEmpty(clientId.trim())) {
             showToast(R.string.login_null_name_tip);
             return;
         }
+        final Intent service = new Intent(this, WifiChangeService.class);
         initChatManager(clientId);
         ChatManager.getInstance().openClient(new AVIMClientCallback() {
             @Override
@@ -81,6 +83,12 @@ public class LoginActivity extends AVBaseActivity {
                         @Override
                         public void done(AVIMException e) {
                             if (null == e) {
+                                savePreferences(clientId, passWd);
+                                service.putExtra("bool_login", true);
+                                stopService(service);
+                                startService(service);
+
+
 
                                 turnToMainActivity();
                             }
@@ -110,6 +118,18 @@ public class LoginActivity extends AVBaseActivity {
             chatManager.setupManagerWithUserId(userId);
         }
         chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
+    }
+
+    /**
+     * 保存帐号信息到本地
+     * @param username
+     * @param password
+     */
+    private void savePreferences(String username, String password) {
+        SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.string_file_name), MODE_MULTI_PROCESS).edit();
+        editor.putString(getString(R.string.string_user_name), username);
+        editor.putString(getString(R.string.string_pass_word), password);
+        editor.apply();
     }
 
 

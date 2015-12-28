@@ -151,32 +151,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-    public void showEditTextDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.dialog_edit_view, null);
-        builder.setView(layout);
-        final EditText editText = (EditText) layout.findViewById(R.id.edtTxt_addChat);
-        builder.setTitle("开启对话");
-        builder.setPositiveButton("对话", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String userID = editText.getText().toString();
-                if (userID.equals("")) {
-                    Toast.makeText(MainActivity.this, "请输入ID", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Intent intent = new Intent(MainActivity.this, AVChatActivity.class);
-                intent.putExtra(Constants.MEMBER_ID, userID);
-                startActivity(intent);
-
-            }
-        });
-        builder.setNegativeButton("取消", null);
-        builder.show();
-
-    }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
