@@ -42,6 +42,7 @@ public class WifiChangeService extends Service {
     private boolean wifiConnect = false;
     private boolean haveConnect = false;
     private boolean showDialog = true;
+    private int isLogin = -1; //-1 默认值， 0 登录成功 1 登录失败
 
     private KeyguardManager keyguardManager;
 
@@ -116,7 +117,7 @@ public class WifiChangeService extends Service {
                     }
                 }
 
-            } else {
+            } else if (intent.getBooleanExtra("bool_login", false)){
                 showToast("首次使用，请连接到WXXY无线网络!");
             }
         }
@@ -245,12 +246,14 @@ public class WifiChangeService extends Service {
             switch (msg.what) {
                 case CONTENT_SUCCESS:
                     haveConnect = true;
+                    isLogin = 0;
                     System.out.println("登陆成功");
                     showToast("登陆成功");
                     break;
                 case CONTENT_FAILD:
                     System.out.println("登陆失败");
                     haveConnect = false;
+                    isLogin = 1;
                     showToast("登陆失败\n" + msg.getData().getString("string"));
                     System.out.println(msg.getData().getString("string"));
                     break;
@@ -258,7 +261,7 @@ public class WifiChangeService extends Service {
         }
     }
 
-    public boolean isHaveConnect() {
-        return haveConnect;
+    public int isLogin() {
+        return isLogin;
     }
 }

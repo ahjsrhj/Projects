@@ -73,6 +73,11 @@ public class LoginActivity extends AVBaseActivity {
             return;
         }
         final Intent service = new Intent(this, WifiChangeService.class);
+        savePreferences(clientId, passWd);
+        service.putExtra("bool_login", true);
+        stopService(service);
+        startService(service);
+
         initChatManager(clientId);
         ChatManager.getInstance().openClient(new AVIMClientCallback() {
             @Override
@@ -83,13 +88,6 @@ public class LoginActivity extends AVBaseActivity {
                         @Override
                         public void done(AVIMException e) {
                             if (null == e) {
-                                savePreferences(clientId, passWd);
-                                service.putExtra("bool_login", true);
-                                stopService(service);
-                                startService(service);
-
-
-
                                 turnToMainActivity();
                             }
 
