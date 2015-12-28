@@ -1,6 +1,7 @@
 package tk.imrhj.onechat.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -25,21 +26,47 @@ public class LoginActivity extends AVBaseActivity {
     @Bind(R.id.activity_login_et_username)
     protected EditText nameView;
 
+    @Bind(R.id.activity_login_et_password)
+    protected EditText passView;
+
     @Bind(R.id.activity_login_btn_login)
     protected Button loginBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-//        loginBtn.performClick();
-
-//        startActivity(new Intent(this, MainActivity.class));
+        initEditText();
     }
+
+    /**
+     * 初始化EditText
+     */
+    private void initEditText() {
+        loadData();
+        String clientId = nameView.getText().toString();
+        if (!clientId.equals("")) {
+            initChatManager(clientId);
+            turnToMainActivity();
+
+        }
+    }
+
+    /**
+     * 当打开应用时读取数据
+     */
+    private void loadData() {
+        SharedPreferences preferences = getSharedPreferences(getString(R.string.string_file_name), MODE_PRIVATE);
+        nameView.setText(preferences.getString(getString(R.string.string_user_name), ""));
+        passView.setText(preferences.getString(getString(R.string.string_pass_word), ""));
+    }
+
 
     @OnClick(R.id.activity_login_btn_login)
     public void onLoginClick(View v) {
         String clientId = nameView.getText().toString();
+        String passWd = null;
         if (TextUtils.isEmpty(clientId.trim())) {
             showToast(R.string.login_null_name_tip);
             return;
@@ -54,9 +81,8 @@ public class LoginActivity extends AVBaseActivity {
                         @Override
                         public void done(AVIMException e) {
                             if (null == e) {
-                                finish();
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
+
+                                turnToMainActivity();
                             }
 
                         }
@@ -66,6 +92,15 @@ public class LoginActivity extends AVBaseActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 跳转到MainActivity
+     */
+    private void turnToMainActivity() {
+        finish();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void initChatManager(String userId) {
