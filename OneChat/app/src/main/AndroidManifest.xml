@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
 
 
@@ -45,8 +46,7 @@
         <service android:name="com.avos.avoscloud.PushService" />
 
         <service
-            android:name=".Service.WifiChangeService"
-            android:process="tk.imrhj.onechat.WifiChangeService" >
+            android:name=".Service.WifiChangeService" >
         </service>
     </application>
 

@@ -1,8 +1,13 @@
 package tk.imrhj.onechat.Activity;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +38,11 @@ public class LoginActivity extends AVBaseActivity {
     @Bind(R.id.activity_login_btn_login)
     protected Button loginBtn;
 
+    private WifiChangeService wifiChangeService;
+    private MyHandler handler = new MyHandler();
+    private String mClientID;
+    private boolean mLoginSucceed = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +57,9 @@ public class LoginActivity extends AVBaseActivity {
     private void initEditText() {
         loadData();
         String clientId = nameView.getText().toString();
-        if (!clientId.equals("")) {
+        if (mLoginSucceed && !clientId.equals("")) {
             initChatManager(clientId);
             turnToMainActivity();
-
         }
     }
 
@@ -61,23 +70,31 @@ public class LoginActivity extends AVBaseActivity {
         SharedPreferences preferences = getSharedPreferences(getString(R.string.string_file_name), MODE_MULTI_PROCESS);
         nameView.setText(preferences.getString(getString(R.string.string_user_name), ""));
         passView.setText(preferences.getString(getString(R.string.string_pass_word), ""));
+        mLoginSucceed = preferences.getBoolean(getString(R.string.string_login_succeed), false);
     }
 
 
     @OnClick(R.id.activity_login_btn_login)
     public void onLoginClick(View v) {
-        final String clientId = nameView.getText().toString();
+        mClientID = nameView.getText().toString();
         final String passWd = null;
-        if (TextUtils.isEmpty(clientId.trim())) {
+        if (TextUtils.isEmpty(mClientID.trim())) {
             showToast(R.string.login_null_name_tip);
             return;
         }
         final Intent service = new Intent(this, WifiChangeService.class);
-        savePreferences(clientId, passWd);
+        savePreferences(mClientID, passWd);
         service.putExtra("bool_login", true);
         stopService(service);
         startService(service);
+        bindWifiChangeService(service);
+    }
 
+    /**
+     * 初始化聊天服务，登录聊天系统
+     * @param clientId
+     */
+    private void initChat(String clientId) {
         initChatManager(clientId);
         ChatManager.getInstance().openClient(new AVIMClientCallback() {
             @Override
@@ -90,7 +107,6 @@ public class LoginActivity extends AVBaseActivity {
                             if (null == e) {
                                 turnToMainActivity();
                             }
-
                         }
                     });
                 } else {
@@ -98,6 +114,41 @@ public class LoginActivity extends AVBaseActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 初始化聊天管理器
+     * @param userId
+     */
+    private void initChatManager(String userId) {
+        final ChatManager chatManager = ChatManager.getInstance();
+        chatManager.init(this);
+        if (!TextUtils.isEmpty(userId)) {
+            chatManager.setupManagerWithUserId(userId);
+        }
+        chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
+    }
+
+
+    /**
+     * Bind服务，获取该服务的实例
+     * @param intent
+     */
+    private void bindWifiChangeService(Intent intent) {
+        ServiceConnection connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                wifiChangeService = ((WifiChangeService.MsgBinder) service).getService();
+                new Thread(new MyRunnable()).start();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+
+        bindService(intent, connection, 0);
     }
 
     /**
@@ -109,14 +160,6 @@ public class LoginActivity extends AVBaseActivity {
         startActivity(intent);
     }
 
-    private void initChatManager(String userId) {
-        final ChatManager chatManager = ChatManager.getInstance();
-        chatManager.init(this);
-        if (!TextUtils.isEmpty(userId)) {
-            chatManager.setupManagerWithUserId(userId);
-        }
-        chatManager.setConversationEventHandler(ConversationEventHandler.getInstance());
-    }
 
     /**
      * 保存帐号信息到本地
@@ -128,6 +171,46 @@ public class LoginActivity extends AVBaseActivity {
         editor.putString(getString(R.string.string_user_name), username);
         editor.putString(getString(R.string.string_pass_word), password);
         editor.apply();
+    }
+
+    private class MyRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            int isLogin;
+            while ((isLogin = wifiChangeService.isLogin()) == -1) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (isLogin == 0) {
+                //wifi登录成功
+                Message msg = new Message();
+                msg.what = WifiChangeService.CONNECT_SUCCESS;
+                handler.sendMessage(msg);
+            } else {
+                //wifi登录失败
+            }
+
+        }
+    }
+
+    private class MyHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case WifiChangeService.CONNECT_SUCCESS:
+                    initChat(mClientID);
+                    SharedPreferences.Editor editor = getSharedPreferences(
+                                    getString(R.string.string_file_name),
+                                    MODE_MULTI_PROCESS).edit();
+                    editor.putBoolean(getString(R.string.string_login_succeed), true);
+                    editor.apply();
+                    break;
+            }
+        }
     }
 
 

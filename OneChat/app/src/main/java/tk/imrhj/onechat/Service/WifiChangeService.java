@@ -46,8 +46,8 @@ public class WifiChangeService extends Service {
 
     private KeyguardManager keyguardManager;
 
-    private final int CONTENT_SUCCESS = 1;
-    private final int CONTENT_FAILD = 0;
+    public static final int CONNECT_SUCCESS= 1;
+    public static final int CONNECT_FAILD = 0;
 
 
     private MyHandler handler;
@@ -172,11 +172,11 @@ public class WifiChangeService extends Service {
                         message.setData(bundle);
                         if (buffer.toString().matches("login_ok,[\\w\\d,%]+")) {
                             System.out.println("TRUE");
-                            message.what = CONTENT_SUCCESS;
+                            message.what = CONNECT_SUCCESS;
                         } else {
                             Log.e(this.toString(), "run " + buffer.toString());
                             System.out.println("FALSE");
-                            message.what = CONTENT_FAILD;
+                            message.what = CONNECT_FAILD;
                         }
                         handler.sendMessage(message);
                     }
@@ -234,7 +234,7 @@ public class WifiChangeService extends Service {
     /**
      * 在MainAcitivity中获取Service实例
      */
-    private class MsgBinder extends Binder {
+    public class MsgBinder extends Binder {
         public WifiChangeService getService() {
             return WifiChangeService.this;
         }
@@ -244,18 +244,16 @@ public class WifiChangeService extends Service {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case CONTENT_SUCCESS:
+                case CONNECT_SUCCESS:
                     haveConnect = true;
                     isLogin = 0;
-                    System.out.println("登陆成功");
-                    showToast("登陆成功");
+                    showToast("Wifi登陆成功");
                     break;
-                case CONTENT_FAILD:
+                case CONNECT_FAILD:
                     System.out.println("登陆失败");
                     haveConnect = false;
                     isLogin = 1;
-                    showToast("登陆失败\n" + msg.getData().getString("string"));
-                    System.out.println(msg.getData().getString("string"));
+                    showToast("Wifi登陆失败\n" + msg.getData().getString("string"));
                     break;
             }
         }
