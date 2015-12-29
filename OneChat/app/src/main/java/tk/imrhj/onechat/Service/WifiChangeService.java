@@ -35,6 +35,7 @@ import tk.imrhj.onechat.R;
  * 当Wifi连接发生变化时， 弹出提示是否连接网络。
  */
 public class WifiChangeService extends Service {
+    private static final String TAG = "WifiChangeService";
     private String username;
     private String password;
     private String userLength;
@@ -66,6 +67,7 @@ public class WifiChangeService extends Service {
         password = preferences.getString(getString(R.string.string_pass_word), "");
         String string = "action=login&username=" + username + "&password=" + password
                 + "&ac_id=4&user_ip=&nas_ip=&user_mac=&save_me=0&ajax=1";
+        Log.e(TAG, "onCreate: " + string);
         userPost = string.toLowerCase();
         userLength = String.valueOf(userPost.length());
 
@@ -89,8 +91,11 @@ public class WifiChangeService extends Service {
         if (wifiConnect && !haveConnect) {
 
             String SSID = info.getSSID();
+            boolean boolLogin = intent.getBooleanExtra("bool_login", false);
             if (((SSID.equals("\"WXXY\"")) || (SSID.equals("WXXY")))) {
-                if (showDialog) {
+                if (boolLogin) {
+                    doLogin(userPost, userLength);
+                } else if (showDialog) {
                     if (!keyguardManager.inKeyguardRestrictedInputMode()) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
                         dialog.setTitle("提示")
@@ -116,8 +121,7 @@ public class WifiChangeService extends Service {
                         showDialog = false;
                     }
                 }
-
-            } else if (intent.getBooleanExtra("bool_login", false)){
+            } else if (boolLogin) {
                 showToast("首次使用，请连接到WXXY无线网络!");
             }
         }
@@ -215,6 +219,8 @@ public class WifiChangeService extends Service {
                     } else {
                         haveConnect = true;
                     }
+
+                    Log.e(TAG, "run: " + haveConnect);
 
 
                 } catch (IOException e) {

@@ -9,4 +9,5 @@
     <string name="string_user_name">userName</string>
     <string name="string_pass_word">passWord</string>
     <string name="string_login_succeed">loginSucceed</string>
+    <string name="string_is_first_use">isFirstUse</string>
 </resources>

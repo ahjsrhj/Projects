@@ -1,6 +1,8 @@
 package tk.imrhj.onechat.Activity;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -9,6 +11,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +32,7 @@ import tk.imrhj.onechat.Service.WifiChangeService;
 import tk.imrhj.onechat.Util.Utils;
 
 public class LoginActivity extends AVBaseActivity {
+    private static final String TAG = "LoginActivity";
     @Bind(R.id.activity_login_et_username)
     protected EditText nameView;
 
@@ -42,13 +46,47 @@ public class LoginActivity extends AVBaseActivity {
     private MyHandler handler = new MyHandler();
     private String mClientID;
     private boolean mLoginSucceed = false;
+    private boolean isFirstUse = true;
+    private SharedPreferences preferences;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        initFirst();
         initEditText();
+    }
+
+    /**
+     * 首次使用本软件的处理逻辑
+     */
+    private void initFirst() {
+        preferences = getSharedPreferences(getString(R.string.string_file_name), MODE_MULTI_PROCESS);
+        isFirstUse = preferences.getBoolean(getString(R.string.string_is_first_use), true);
+        if (isFirstUse) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("提示")
+                    .setMessage("首次使用，需要链接WXXY无线网络进行用户信息认证")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SharedPreferences.Editor editor = getSharedPreferences(
+                                    getString(R.string.string_file_name),
+                                    MODE_MULTI_PROCESS).edit();
+                            editor.putBoolean(getString(R.string.string_is_first_use), false);
+                            editor.apply();
+                        }
+                    })
+                    .setNegativeButton("退出", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
+        }
+
     }
 
     /**
@@ -58,8 +96,8 @@ public class LoginActivity extends AVBaseActivity {
         loadData();
         String clientId = nameView.getText().toString();
         if (mLoginSucceed && !clientId.equals("")) {
-            initChatManager(clientId);
-            turnToMainActivity();
+            initChat(clientId);
+//            turnToMainActivity();
         }
     }
 
@@ -67,7 +105,6 @@ public class LoginActivity extends AVBaseActivity {
      * 当打开应用时读取数据
      */
     private void loadData() {
-        SharedPreferences preferences = getSharedPreferences(getString(R.string.string_file_name), MODE_MULTI_PROCESS);
         nameView.setText(preferences.getString(getString(R.string.string_user_name), ""));
         passView.setText(preferences.getString(getString(R.string.string_pass_word), ""));
         mLoginSucceed = preferences.getBoolean(getString(R.string.string_login_succeed), false);
@@ -77,9 +114,13 @@ public class LoginActivity extends AVBaseActivity {
     @OnClick(R.id.activity_login_btn_login)
     public void onLoginClick(View v) {
         mClientID = nameView.getText().toString();
-        final String passWd = null;
+        final String passWd = passView.getText().toString();
         if (TextUtils.isEmpty(mClientID.trim())) {
             showToast(R.string.login_null_name_tip);
+            return;
+        }
+        if (TextUtils.isEmpty(passWd.trim())) {
+            showToast("请输入密码");
             return;
         }
         final Intent service = new Intent(this, WifiChangeService.class);

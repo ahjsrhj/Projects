@@ -30,6 +30,6 @@
         android:background="@drawable/login_btn_bg"
         android:text="@string/login"
         android:layout_below="@+id/activity_login_et_password"
-
         />
+
 </RelativeLayout>
