@@ -12,25 +12,28 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
 
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.LoginActivity">
+        <activity android:name=".Activity.WelcomeActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.avoscloud.leanchatlib.activity.AVChatActivity" />
 
+        <activity android:name=".Activity.LoginActivity" />
+        <activity android:name="com.avoscloud.leanchatlib.activity.AVChatActivity" />
         <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -38,10 +41,15 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.avos.avoscloud.PushService" />
 
         <activity android:name="com.avoscloud.leanchatlib.activity.ImageBrowserActivity" />
         <activity android:name=".Activity.MainActivity"></activity>
+
+        <service android:name="com.avos.avoscloud.PushService" />
+
+        <service
+            android:name=".Service.WifiChangeService" >
+        </service>
     </application>
 
 </manifest>

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -112,6 +113,10 @@ public class ContactFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String userID = mContactItem.get(position).userID;
+        if (userID.equals(ChatManager.getInstance().getSelfId())) {
+            Toast.makeText(getContext(), "你很寂寞吗？\n为什么要和自己聊天(U •́ .̫ •̀ U)", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(getActivity(), AVChatActivity.class);
         intent.putExtra(Constants.MEMBER_ID, userID);
         startActivity(intent);

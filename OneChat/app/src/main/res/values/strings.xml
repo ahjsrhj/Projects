@@ -5,4 +5,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="txt_chat_list_no_message">无消息</string>
     <string name="action_add">添加</string>
+    <string name="string_file_name">userInfo</string>
+    <string name="string_user_name">userName</string>
+    <string name="string_pass_word">passWord</string>
+    <string name="string_login_succeed">loginSucceed</string>
+    <string name="string_is_first_use">isFirstUse</string>
 </resources>

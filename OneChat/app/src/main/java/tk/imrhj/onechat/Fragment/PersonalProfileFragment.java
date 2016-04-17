@@ -1,6 +1,8 @@
 package tk.imrhj.onechat.Fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -56,6 +58,14 @@ public class PersonalProfileFragment extends Fragment {
 
     @OnClick(R.id.profile_logout_btn)
     protected void onLogoutClick(View view) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(
+                getString(R.string.string_file_name),
+                Context.MODE_MULTI_PROCESS).edit();
+        editor.putBoolean(getString(R.string.string_login_succeed), false);
+        editor.apply();
+
+
+
         ChatManager.getInstance().closeWithCallback(new AVIMClientCallback() {
             @Override
             public void done(AVIMClient avimClient, AVIMException e) {
