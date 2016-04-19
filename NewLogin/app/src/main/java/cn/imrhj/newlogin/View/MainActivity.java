@@ -2,7 +2,6 @@ package cn.imrhj.newlogin.View;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +31,13 @@ public class MainActivity extends AppCompatActivity implements LoginViewInterfac
 
     }
 
+    @Override
+    protected void onDestroy() {
+        mPresenter.onActivityDestroy();
+        super.onDestroy();
+
+    }
+
     /**
      * 获取用户信息
      *
@@ -39,7 +45,14 @@ public class MainActivity extends AppCompatActivity implements LoginViewInterfac
      */
     @Override
     public UserInfo getUserInfo() {
-        return new UserInfo(mUserName.getText().toString(), mPassword.getText().toString());
+        UserInfo userInfo = new UserInfo(mUserName.getText().toString(),
+                mPassword.getText().toString());
+        if (userInfo.isEmpty()) {
+            return null;
+        } else {
+            return userInfo;
+        }
+
     }
 
     /**
@@ -49,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements LoginViewInterfac
      */
     @Override
     public void setUserInfo(UserInfo userInfo) {
+        if (userInfo == null) {
+            return;
+        }
         mUserName.setText(userInfo.getUsername());
         mPassword.setText(userInfo.getPassword());
     }
@@ -59,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements LoginViewInterfac
      * @param string
      */
     @Override
-    public void showNetWorkType(String string) {
+    public void showNetworkType(String string) {
         mNetWorkType.setText(string);
     }
 
@@ -77,4 +93,5 @@ public class MainActivity extends AppCompatActivity implements LoginViewInterfac
     public void onClick(View view) {
         mPresenter.login();
     }
+
 }

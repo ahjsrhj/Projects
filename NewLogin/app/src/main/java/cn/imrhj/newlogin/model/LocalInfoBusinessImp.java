@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 /**
  * Created by rhj on 16/4/17.
+ * 本地信息读取业务代码
  */
 public class LocalInfoBusinessImp implements LocalUserInfoInterface {
     private final SharedPreferences sharedPreferences;
@@ -22,7 +23,12 @@ public class LocalInfoBusinessImp implements LocalUserInfoInterface {
     public UserInfo getUserInfo() {
         String username = sharedPreferences.getString("username", "");
         String password = sharedPreferences.getString("password", "");
-        return new UserInfo(username, password);
+        UserInfo userInfo = new UserInfo(username, password);
+        if (userInfo.isEmpty()) {
+            return null;
+        } else {
+            return userInfo;
+        }
     }
 
     /**
@@ -33,8 +39,8 @@ public class LocalInfoBusinessImp implements LocalUserInfoInterface {
     @Override
     public void saveUserInfo(UserInfo userInfo) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("username", userInfo.getKeepUsername());
-        editor.putString("password", userInfo.getKeepPassword());
+        editor.putString("username", userInfo.getUsername());
+        editor.putString("password", userInfo.getPassword());
         editor.apply();
     }
 }

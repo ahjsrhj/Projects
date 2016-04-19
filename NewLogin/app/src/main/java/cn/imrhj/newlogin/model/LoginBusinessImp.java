@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.imrhj.newlogin.Utils.UserInfoModify;
 import cn.imrhj.newlogin.presenter.LoginPresenter;
 
 /**
@@ -37,18 +38,18 @@ public class LoginBusinessImp implements LoginModelInterface {
     }
 
     @Override
-    public void login(final UserInfo userInfo, final String SSID,
+    public void login(final UserInfoModify infoModify,
                       Response.Listener<String> stringListener,
                       Response.ErrorListener errorListener) {
         StringRequest request = new StringRequest(
-                Request.Method.POST, mLinkMap.get(SSID),stringListener, errorListener) {
+                Request.Method.POST, mLinkMap.get(infoModify.getSSID()),stringListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("action", "login");
-                map.put("username", userInfo.getUsername());
-                map.put("password", userInfo.getPassword());
-                map.put("ac_id", userInfo.getAC_ID());
+                map.put("username", infoModify.getUserName());
+                map.put("password", infoModify.getPassword());
+                map.put("ac_id", infoModify.getAC_ID());
                 map.put("user_ip", "");
                 map.put("nas_ip", "");
                 map.put("user_mac", "");
@@ -57,7 +58,13 @@ public class LoginBusinessImp implements LoginModelInterface {
                 Log.d(TAG, "getParams: " + map.toString());
                 return map;
             } };
-        Log.d(TAG, "login: " + userInfo.getUsername() +" ssid =  " + SSID);
+        Log.d(TAG, "login: " + infoModify.getUserName() +" ssid =  " + infoModify.getSSID());
         mQueue.add(request);
+    }
+
+    @Override
+    public void forcedLogin(Response.Listener<String> stringListener,
+                            Response.ErrorListener errorListener) {
+        this.login(new UserInfoModify(null, "WLZX"), stringListener, errorListener);
     }
 }

@@ -23,7 +23,7 @@ public interface LoginViewInterface {
      * 显示网络类型
      * @param string
      */
-    void showNetWorkType(String string);
+    void showNetworkType(String string);
 
     /**
      * 显示提示信息
